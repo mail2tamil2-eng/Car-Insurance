@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Button interaction states ──────────────────────────────────────────── */
+
+.btn-primary {
+  background: #1D4ED8;
+  color: white;
+  border: none;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #1E40AF;
+  box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
+}
+.btn-primary:active:not(:disabled) {
+  background: #1E3A8A;
+  transform: translateY(1px);
+}
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.35);
+}
+.btn-primary:disabled {
+  background: #93C5FD;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #374151;
+  border: 1.5px solid #D1D5DB;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+}
+.btn-secondary:active:not(:disabled) {
+  background: #F3F4F6;
+}
+.btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+  border-color: #1D4ED8;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #1D4ED8;
+  border: none;
+  transition: color 0.15s, text-decoration 0.15s;
+}
+.btn-ghost:hover {
+  color: #1E40AF;
+  text-decoration: underline;
+}
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+  border-radius: 4px;
+}
+
+/* ── Text input states ───────────────────────────────────────────────────── */
+
+.field-input {
+  border: 1.5px solid #D1D5DB;
+  background: white;
+  color: #0F172A;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  outline: none;
+}
+.field-input::placeholder {
+  color: #94A3B8;
+}
+.field-input:hover:not(:focus):not(.field-error) {
+  border-color: #9CA3AF;
+}
+.field-input:focus {
+  border-color: #1D4ED8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+}
+.field-input.field-error {
+  border-color: #EF4444;
+  background: #FEF2F2;
+}
+.field-input.field-error:focus {
+  border-color: #EF4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+}
+
+/* ── Option button (car use / yes-no selectors) ─────────────────────────── */
+
+.option-btn {
+  border: 1.5px solid #E2E8F0;
+  background: white;
+  color: #374151;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  outline: none;
+  cursor: pointer;
+}
+.option-btn:hover:not(.option-active) {
+  border-color: #93C5FD;
+  background: #F8FAFC;
+}
+.option-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+  border-color: #1D4ED8;
+}
+.option-btn.option-active {
+  border: 2px solid #1D4ED8;
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+/* ── Plan card ───────────────────────────────────────────────────────────── */
+
+.plan-card {
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+.plan-card:hover:not(.plan-selected) {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+  transform: translateY(-2px);
+}
+.plan-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.22);
+}
+.plan-card.plan-selected {
+  box-shadow: 0 8px 24px rgba(29, 78, 216, 0.14);
+}
+
+/* ── Select-plan button inside plan card ─────────────────────────────────── */
+
+.plan-select-btn {
+  transition: background 0.15s, opacity 0.15s;
+}
+.plan-select-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Add-on card ─────────────────────────────────────────────────────────── */
+
+.addon-toggle-btn {
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.addon-toggle-btn:hover {
+  opacity: 0.88;
+}
+.addon-toggle-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+}
+
+/* ── Payment method card ─────────────────────────────────────────────────── */
+
+.payment-method {
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.payment-method:hover:not(.payment-active) {
+  border-color: #93C5FD;
+  background: #F8FAFC;
+}
+.payment-method:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+}
+.payment-method.payment-active {
+  border-color: #1D4ED8;
+  background: #EFF6FF;
+}
+
+/* ── Link / text button ──────────────────────────────────────────────────── */
+
+.text-link {
+  transition: color 0.15s;
+}
+.text-link:hover {
+  color: #1E40AF;
+}
+.text-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+  border-radius: 3px;
+}
+
+/* ── Back button ─────────────────────────────────────────────────────────── */
+
+.back-btn {
+  transition: color 0.15s;
+  color: #64748B;
+}
+.back-btn:hover {
+  color: #1E293B;
+}
+.back-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.18);
+  border-radius: 4px;
+}

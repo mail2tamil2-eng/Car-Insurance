@@ -1,0 +1,11 @@
+{
+  "title": "InsureGo - Car Insurance",
+  "description": "Compare cover options, choose the protection you need, and get your car insurance policy online in minutes.",
+  "robots": {
+    "index": true
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
