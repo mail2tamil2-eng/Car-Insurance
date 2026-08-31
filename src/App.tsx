@@ -162,6 +162,45 @@ function fmt(n: number) {
   return "₹" + n.toLocaleString("en-IN");
 }
 
+interface RegError {
+  title: string;
+  hint: string;
+}
+
+const REG_STANDARD_FORMAT = /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$/;
+const REG_BH_FORMAT = /^[0-9]{2}BH[0-9]{4}[A-Z]{1,2}$/;
+const REG_EXAMPLE_HINT = "Use the format on your RC book, e.g. TN 38 AB 1234.";
+
+function validateRegNumber(raw: string): RegError | null {
+  const core = raw.trim().toUpperCase().replace(/\s+/g, "");
+
+  if (/[^A-Z0-9]/.test(core)) {
+    return {
+      title: "Only letters and numbers are allowed, no symbols.",
+      hint: REG_EXAMPLE_HINT,
+    };
+  }
+  if (core.length < 9 || core.length > 10) {
+    return {
+      title: "Registration number must be 9-10 characters long.",
+      hint: REG_EXAMPLE_HINT,
+    };
+  }
+  if (!/[A-Z]/.test(core) || !/[0-9]/.test(core)) {
+    return {
+      title: "Registration number must be a mix of letters and numbers.",
+      hint: REG_EXAMPLE_HINT,
+    };
+  }
+  if (!REG_STANDARD_FORMAT.test(core) && !REG_BH_FORMAT.test(core)) {
+    return {
+      title: "That doesn't look like a valid registration number.",
+      hint: REG_EXAMPLE_HINT,
+    };
+  }
+  return null;
+}
+
 const STAGE_LABELS = ["Vehicle", "Details", "Cover", "Review", "Payment"];
 
 function getStage(step: Step): number {
@@ -544,13 +583,13 @@ function RegistrationScreen({
   setReg,
   onBack,
   onSubmit,
-  hasError,
+  error,
 }: {
   reg: string;
   setReg: (v: string) => void;
   onBack: () => void;
   onSubmit: () => void;
-  hasError: boolean;
+  error: RegError | null;
 }) {
   return (
     <PageWrap>
@@ -574,12 +613,19 @@ function RegistrationScreen({
           <input
             type="text"
             value={reg}
-            onChange={(e) => setReg(e.target.value.toUpperCase())}
+            onChange={(e) =>
+              setReg(
+                e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z0-9 ]/g, "")
+                  .slice(0, 13)
+              )
+            }
             placeholder="TN 38 AB 1234"
             onKeyDown={(e) => e.key === "Enter" && onSubmit()}
-            className={`field-input w-full px-4 py-3 rounded-lg text-base font-medium tracking-wider${hasError ? " field-error" : ""}`}
+            className={`field-input w-full px-4 py-3 rounded-lg text-base font-medium tracking-wider${error ? " field-error" : ""}`}
           />
-          {hasError ? (
+          {error ? (
             <div
               className="mt-2.5 flex items-start gap-2 text-sm"
               style={{ color: "#DC2626" }}
@@ -600,11 +646,9 @@ function RegistrationScreen({
                 />
               </svg>
               <div>
-                <div className="font-semibold">
-                  We couldn't find a vehicle with this registration number.
-                </div>
+                <div className="font-semibold">{error.title}</div>
                 <div className="mt-0.5" style={{ color: "#EF4444" }}>
-                  Check the registration number and try again.
+                  {error.hint}
                 </div>
               </div>
             </div>
@@ -2101,7 +2145,7 @@ function SuccessScreen({ onReset }: { onReset: () => void }) {
 export default function App() {
   const [step, setStep] = useState<Step>("landing");
   const [reg, setReg] = useState("");
-  const [regError, setRegError] = useState(false);
+  const [regError, setRegError] = useState<RegError | null>(null);
   const [carUse, setCarUse] = useState("");
   const [hasInsurance, setHasInsurance] = useState<boolean | null>(null);
   const [expiry, setExpiry] = useState("");
@@ -2130,10 +2174,18 @@ export default function App() {
   const handleRegSubmit = () => {
     if (!reg.trim()) return;
     if (reg.trim().toUpperCase() === "INVALID") {
-      setRegError(true);
+      setRegError({
+        title: "We couldn't find a vehicle with this registration number.",
+        hint: "Check the registration number and try again.",
+      });
       return;
     }
-    setRegError(false);
+    const validationError = validateRegNumber(reg);
+    if (validationError) {
+      setRegError(validationError);
+      return;
+    }
+    setRegError(null);
     setStep("loading");
   };
 
@@ -2165,11 +2217,11 @@ export default function App() {
           reg={reg}
           setReg={(v) => {
             setReg(v);
-            setRegError(false);
+            setRegError(null);
           }}
           onBack={() => setStep("landing")}
           onSubmit={handleRegSubmit}
-          hasError={regError}
+          error={regError}
         />
       )}
 
@@ -2180,7 +2232,7 @@ export default function App() {
           onConfirm={() => setStep("details")}
           onWrong={() => {
             setReg("");
-            setRegError(false);
+            setRegError(null);
             setStep("registration");
           }}
         />
@@ -2268,7 +2320,7 @@ export default function App() {
           onReset={() => {
             setStep("landing");
             setReg("");
-            setRegError(false);
+            setRegError(null);
             setCarUse("");
             setHasInsurance(null);
             setExpiry("");
