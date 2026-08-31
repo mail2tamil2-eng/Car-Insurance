@@ -214,14 +214,23 @@ function getStage(step: Step): number {
 
 // ─── Shared Components ────────────────────────────────────────────────────────
 
-function Header({ showHelp }: { showHelp?: boolean }) {
+function Header({
+  showHelp,
+  onLogoClick,
+}: {
+  showHelp?: boolean;
+  onLogoClick: () => void;
+}) {
   return (
     <header
       style={{ borderBottom: "1px solid #E2E8F0" }}
       className="bg-white sticky top-0 z-40"
     >
       <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
+        <button
+          onClick={onLogoClick}
+          className="flex items-center gap-2.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600/30"
+        >
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ background: "#1D4ED8" }}
@@ -239,7 +248,7 @@ function Header({ showHelp }: { showHelp?: boolean }) {
           >
             InsureGo
           </span>
-        </div>
+        </button>
         {showHelp && (
           <div className="flex items-center gap-3 text-sm" style={{ color: "#64748B" }}>
             <span>Need help?</span>
@@ -1047,8 +1056,8 @@ function PlansScreen({
                   }}
                   className="plan-select-btn w-full mt-5 py-2.5 rounded-lg text-sm font-semibold"
                   style={{
-                    background: isSel || isRec ? "#1D4ED8" : "#F1F5F9",
-                    color: isSel || isRec ? "white" : "#374151",
+                    background: isSel ? "#1D4ED8" : "#F1F5F9",
+                    color: isSel ? "white" : "#374151",
                   }}
                 >
                   {isSel ? "Selected ✓" : "Select plan"}
@@ -2195,6 +2204,18 @@ export default function App() {
     );
   };
 
+  const resetAll = () => {
+    setStep("landing");
+    setReg("");
+    setRegError(null);
+    setCarUse("");
+    setHasInsurance(null);
+    setExpiry("");
+    setSelectedPlan("recommended");
+    setSelectedAddons([]);
+    setPaymentMethod("upi");
+  };
+
   const showProgress = !["landing", "success", "processing"].includes(step);
 
   return (
@@ -2205,7 +2226,7 @@ export default function App() {
         fontFamily: "'Inter', system-ui, sans-serif",
       }}
     >
-      <Header showHelp />
+      <Header showHelp onLogoClick={resetAll} />
       {showProgress && <ProgressBar step={step} />}
 
       {step === "landing" && (
@@ -2315,21 +2336,7 @@ export default function App() {
         />
       )}
 
-      {step === "success" && (
-        <SuccessScreen
-          onReset={() => {
-            setStep("landing");
-            setReg("");
-            setRegError(null);
-            setCarUse("");
-            setHasInsurance(null);
-            setExpiry("");
-            setSelectedPlan("recommended");
-            setSelectedAddons([]);
-            setPaymentMethod("upi");
-          }}
-        />
-      )}
+      {step === "success" && <SuccessScreen onReset={resetAll} />}
     </div>
   );
 }
